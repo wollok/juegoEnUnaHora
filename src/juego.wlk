@@ -1,8 +1,37 @@
 import wollok.game.*
 
+class Proyectil {
+	var property position = nave.position().up(1)
+	var nro
+	
+	method moverse() {
+		position = position.up(1)
+		if(position.y() > game.height())
+			self.sacar()
+	}
+	
+	method image() = "bala.png"
+	
+	
+	method empezarAMoverse() {
+				
+		game.onTick(100,"moverBala"+nro,{self.moverse()})
+		game.onCollideDo(self,{
+			enemigo => enemigo.destruir()
+			self.sacar()
+		})
+	}
+	 method sacar(){
+	 	game.removeTickEvent("moverBala"+nro)
+	 	game.removeVisual(self)
+	 }
+	
+	
+}
+
 object nave {
 	var position = game.center().down(5)
-
+	var nroBala = 0
 	method image() = "player.png"
 	method position() = position
 	
@@ -13,7 +42,10 @@ object nave {
 		position = position.left(1)
 	}
 	method disparar(){
-		
+		nroBala = nroBala + 1
+		const bala = new Proyectil(nro = nroBala)
+		game.addVisual(bala)
+		bala.empezarAMoverse() 
 	}
 	
 }
@@ -27,6 +59,9 @@ class Enemigo {
 
 	method image() = "invader" + nro + ".png"
 
+	method destruir() {
+		game.removeVisual(self)		
+	}
 }
 
 object pantalla {
@@ -53,8 +88,7 @@ object pantalla {
 		cantEnemigos.times{i=>
 			self.agregarEnemigo(i)
 		}
-		
-		 
+ 
 	}
 	method programarTeclas() {
 		keyboard.right().onPressDo{nave.derecha()} 
