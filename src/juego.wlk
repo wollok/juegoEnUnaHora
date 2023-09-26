@@ -1,7 +1,7 @@
 import wollok.game.*
 
 object nave {
-	var position = game.center().down(4)
+	var position = game.center().down(5)
 
 	method image() = "player.png"
 	method position() = position
@@ -18,7 +18,21 @@ object nave {
 	
 }
 
+class Enemigo {
+
+	var nro
+	var position 
+	
+	method position() = position
+
+	method image() = "invader" + nro + ".png"
+
+}
+
 object pantalla {
+	
+	const cantEnemigos = 10
+	
 	method iniciar() {
 		
 		self.configuracionBasica()
@@ -35,7 +49,12 @@ object pantalla {
 //		game.boardGround("imagenDeFondo.jpg")
 	}
 	method agregarVisuales() {
-		game.addVisual(nave) 
+		game.addVisual(nave)
+		cantEnemigos.times{i=>
+			self.agregarEnemigo(i)
+		}
+		
+		 
 	}
 	method programarTeclas() {
 		keyboard.right().onPressDo{nave.derecha()} 
@@ -44,5 +63,8 @@ object pantalla {
 	}
 	method definirColisiones() {
 		//TODO: Código autogenerado 
+	}
+	method agregarEnemigo(valor) {
+		game.addVisual( new Enemigo(nro = valor % 5 +1, position = game.at(valor + 2 ,game.height()- 1) ))   
 	}
 }
