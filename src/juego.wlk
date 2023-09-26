@@ -60,12 +60,22 @@ class Enemigo {
 	method image() = "invader" + nro + ".png"
 
 	method destruir() {
-		game.removeVisual(self)		
+		nro = nro -2
+		if(nro <= 0 ){
+			game.removeVisual(self)
+			pantalla.quitarEnemigo(self)
+			}		
+	}
+	
+	method moverse() {
+		position = position
+			.down([0,1].anyOne())
+			.left([-1,0,1].anyOne())
 	}
 }
 
 object pantalla {
-	
+	const enemigos = []
 	const cantEnemigos = 10
 	
 	method iniciar() {
@@ -96,9 +106,17 @@ object pantalla {
 		keyboard.space().onPressDo{nave.disparar()} 
 	}
 	method definirColisiones() {
-		//TODO: Código autogenerado 
+		game.onTick(1000,"movimientoEnemigos",{self.moverseTodos()})
 	}
 	method agregarEnemigo(valor) {
-		game.addVisual( new Enemigo(nro = valor % 5 +1, position = game.at(valor + 2 ,game.height()- 1) ))   
+		const enemigo = new Enemigo(nro = valor % 5 +1, position = game.at(valor + 2 ,game.height()- 1) )
+		game.addVisual(enemigo)
+		enemigos.add(enemigo)    
+	}
+	method moverseTodos() {
+		enemigos.forEach{e=>e.moverse()} 
+	}
+	method quitarEnemigo(e){
+		enemigos.remove(e)
 	}
 }
