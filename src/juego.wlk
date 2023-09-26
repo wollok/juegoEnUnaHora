@@ -68,9 +68,13 @@ class Enemigo {
 	}
 	
 	method moverse() {
-		position = position
+		const nuevaPosition = position
 			.down([0,1].anyOne())
 			.left([-1,0,1].anyOne())
+		if (not game.getObjectsIn(nuevaPosition).isEmpty())
+			self.moverse()
+		else
+			position = nuevaPosition
 	}
 }
 
